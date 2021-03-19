@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <script src="./abi.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>Arkius Organisation</title>
+
+    <script type="text/javascript">
+
+    let VotingcontractAddress = "0xE21218201f4fC4c78a35baD1F121Ec23ABD1af87";
+
+    const loadBlockchainData = async () => {
+    // create web3 instance
+    const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
+    const network = await web3.eth.net.getNetworkType();
+    const accounts = await web3.eth.getAccounts();
+
+    const userBalance = web3.utils.fromWei(
+            await web3.eth.getBalance(accounts) // Balance is in wei
+          );
+
+    // Event handler to handle account change
+    window.ethereum.on("accountsChanged", function () {
+      loadBlockchainData();
+
+      });
+
+    let Votingcontract = new web3.eth.Contract(
+            JSON.parse(VotingContractABI),
+            VotingcontractAddress
+          );
+    };
+
+    const handleBecomeCertifier = (e) => {
+    e.preventDefault();
+    Votingcontract.methods
+      .propose()
+      .send({ from: account })
+      .catch((err) => {
+        console.log(err);
+      });
+    };
+
+    const isMember = await Votingcontract.methods.isMember(userAddress).call();
+  </script>>
+  </head>
+  <body>
+    <div class="app">
+      <div class="toolbar">
+        <Box display="flex">
+          <h1 class="app__heading">
+            Arkius Organisation
+          </h1>
+        </Box>
+      </div>
+    <div class="becomeCertifierWrapper">
+      
+        <!-- <p>
+          Your request to contest the Certifier Election is approved. you need
+          to wait till the election result to know your final status.
+        </p> -->
+      
+        if(isMember == "true"){
+          <p>
+            You are not a certifier. If you want to be a certifier in ARKEIUS
+            then click below to become a candidate of Certifier election.
+          </p>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleBecomeCertifier}
+          >
+            Propose
+          </Button>
+        }
+    <!-- 
+          <p>You are Proposed for certifier in ARKIUS ORGANISATION.</p> -->
+   
+    </div>
+      
+  </body>
+</html>
